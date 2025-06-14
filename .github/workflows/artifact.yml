@@ -1,6 +1,8 @@
 name: Workflow Demo
 
-on: [push]
+on: 
+  push:
+  workflow_dispatch:
 
 jobs:
   build:
@@ -18,3 +20,25 @@ jobs:
       with:
         name: hello-artifact
         path: hello.txt
+
+
+  download:
+    if: github.ref == 'refs/head/main'
+    needs: build
+    runs-on: ubuntu-latest
+    concurrency: 
+      group: prod-download
+      cancel-in-progress: true
+
+    steps:
+      
+      - name: Download text file
+        uses: actions/download-artifact@v4
+        with:
+          name: hello-artifact
+          path: ./artifacts
+
+      - name: Display content of the text file
+        run: |
+          cat ./artifacts/hello.txt
+          sleep 180s
