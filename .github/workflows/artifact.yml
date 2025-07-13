@@ -3,7 +3,7 @@ name: Workflow Demo
 on: [push]
 
 jobs:
-  
+
   build:
 
     runs-on: ubuntu-latest
@@ -44,4 +44,7 @@ jobs:
         run: |
             mkdir .artifacts
             mv hello.txt .artifacts/
+      
+      - name: display hello.txt file content
+        run: cat .artifacts/hello.txt
           
