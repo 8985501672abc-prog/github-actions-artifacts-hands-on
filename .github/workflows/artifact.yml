@@ -1,9 +1,13 @@
 name: Workflow Demo
 
-on: [push]
+on: 
+  push:
+  pull_request:
 
 jobs:
+
   build:
+
     runs-on: ubuntu-latest
 
     steps:
@@ -18,3 +22,31 @@ jobs:
       with:
         name: hello-artifact
         path: hello.txt
+    
+    - name: upload a build artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: my-artifact
+        path: hello.txt
+ 
+  download:
+
+    needs: build
+    
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: my-artifact
+        
+      - name: move text file to hidden directory
+        run: |
+            mkdir .artifacts
+            mv hello.txt .artifacts/
+      
+      - name: display hello.txt file content
+        run: cat .artifacts/hello.txt
+          
